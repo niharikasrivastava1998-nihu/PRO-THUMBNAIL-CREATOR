@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Thumbnail Engine</title>
+    <style>
+        :root { --bg: #0f172a; --card: #1e293b; --accent: #38bdf8; --text: #f8fafc; }
+        body { font-family: 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; }
+        .wrapper { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 350px; gap: 20px; }
+        .main-view { background: var(--card); padding: 20px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .sidebar { background: var(--card); padding: 20px; border-radius: 16px; display: flex; flex-direction: column; gap: 15px; }
+        
+        video { width: 100%; border-radius: 8px; border: 1px solid #334155; }
+        canvas { width: 100%; border-radius: 8px; margin-top: 20px; display: none; border: 2px solid var(--accent); }
+        
+        h3 { margin: 0 0 10px 0; color: var(--accent); font-size: 16px; text-transform: uppercase; letter-spacing: 1px; }
+        input, select, button { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; font-size: 14px; box-sizing: border-box; }
+        
+        .theme-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        button { cursor: pointer; border: none; font-weight: bold; transition: 0.2s; }
+        .btn-gen { background: var(--accent); color: #000; margin-top: 10px; }
+        .btn-gen:hover { transform: scale(1.02); background: #7dd3fc; }
+        .btn-dl { background: #22c55e; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <div class="main-view">
+        <h3>1. Video Source</h3>
+        <input type="file" id="videoUpload" accept="video/*" style="margin-bottom:15px;">
+        <video id="videoPlayer" controls></video>
+        
+        <h3>2. Live Preview</h3>
+        <canvas id="canvas"></canvas>
+    </div>
+
+    <div class="sidebar">
+        <h3>3. Text & Content</h3>
+        <input type="text" id="mainText" placeholder="Main Headline (e.g. 5 TIPS)">
+        <input type="text" id="subText" placeholder="Sub-headline">
+
+        <h3>4. Smart Effects</h3>
+        <div class="theme-grid">
+            <button onclick="applyStyle('spotlight')">👤 Human Focus</button>
+            <button onclick="applyStyle('blur_bg')">🌫️ Blur BG</button>
+        </div>
+
+        <h3>5. Border Themes</h3>
+        <select id="borderTheme">
+            <option value="none">No Border</option>
+            <option value="corporate">BFL Corporate (Blue/Gold)</option>
+            <option value="neon">Neon Cyberpunk</option>
+            <option value="journal">Journal Cutout</option>
+            <option value="minimal">Minimal White</option>
+        </select>
+
+        <button class="btn-gen" onclick="render()">Bake Thumbnail</button>
+        <button id="dlBtn" class="btn-dl" style="display:none;" onclick="download()">Download PNG</button>
+    </div>
+</div>
+
+<script>
+    const video = document.getElementById('videoPlayer');
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    let currentStyle = 'none';
+
+    document.getElementById('videoUpload').onchange = (e) => {
+        video.src = URL.createObjectURL(e.target.files[0]);
+    };
+
+    function applyStyle(style) {
+        currentStyle = style;
+        render();
+    }
+
+    function render() {
+        canvas.width = 1280;
+        canvas.height = 720;
+        const theme = document.getElementById('borderTheme').value;
+        const mainTxt = document.getElementById('mainText').value;
+
+        // --- STEP 1: BACKGROUND LAYER ---
+        if (currentStyle === 'blur_bg' || currentStyle === 'spotlight') {
+            // Draw blurred background first
+            ctx.filter = "blur(15px) brightness(0.5)";
+            ctx.drawImage(video, 0, 0, 1280, 720);
+            ctx.filter = "none";
+            
+            // Draw sharp "Human" cutout/spotlight in center
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(640, 360, 400, 0, Math.PI * 2);
+            ctx.clip();
+            ctx.filter = "contrast(1.1) saturate(1.2)";
+            ctx.drawImage(video, 0, 0, 1280, 720);
+            ctx.restore();
+        } else {
+            ctx.filter = "contrast(1.1) saturate(1.1)";
+            ctx.drawImage(video, 0, 0, 1280, 720);
+        }
+
+        // --- STEP 2: DOODLE HIGHLIGHT ---
+        if (currentStyle === 'spotlight') {
+            ctx.strokeStyle = "#fbbf24";
+            ctx.lineWidth = 5;
+            ctx.setLineDash([10, 10]);
+            ctx.beginPath();
+            ctx.ellipse(640, 360, 410, 410, 0, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.setLineDash([]);
+        }
+
+        // --- STEP 3: THEME BORDERS ---
+        ctx.filter = "none";
+        if (theme === 'corporate') {
+            ctx.strokeStyle = "#00529b"; // BFL Blue
+            ctx.lineWidth = 30;
+            ctx.strokeRect(0, 0, 1280, 720);
+            ctx.strokeStyle = "#d4af37"; // Gold accent
+            ctx.lineWidth = 5;
+            ctx.strokeRect(15, 15, 1250, 690);
+        } else if (theme === 'neon') {
+            ctx.shadowColor = "#38bdf8";
+            ctx.shadowBlur = 20;
+            ctx.strokeStyle = "#38bdf8";
+            ctx.lineWidth = 10;
+            ctx.strokeRect(10, 10, 1260, 700);
+        } else if (theme === 'journal') {
+            ctx.fillStyle = "rgba(255,255,255,0.9)";
+            ctx.rotate(-0.02);
+            ctx.fillRect(50, 500, 600, 150); // Text plate
+            ctx.resetTransform();
+        }
+
+        // --- STEP 4: TEXT ENGINE ---
+        if (mainTxt) {
+            ctx.shadowColor = "rgba(0,0,0,0.8)";
+            ctx.shadowBlur = 15;
+            ctx.fillStyle = "white";
+            ctx.font = "bold 90px Arial";
+            ctx.textAlign = "left";
+            ctx.fillText(mainTxt.toUpperCase(), 80, 600);
+            
+            ctx.font = "40px Arial";
+            ctx.fillStyle = "#38bdf8";
+            ctx.fillText(document.getElementById('subText').value, 80, 650);
+        }
+
+        canvas.style.display = 'block';
+        document.getElementById('dlBtn').style.display = 'block';
+    }
+
+    function download() {
+        const link = document.createElement('a');
+        link.download = 'pro-thumbnail.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+    }
+</script>
+
+</body>
+</html>
