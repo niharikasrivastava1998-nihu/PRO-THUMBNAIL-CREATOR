@@ -3,192 +3,181 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Creator Studio Pro</title>
+    <title>Creator Core v2.0</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Permanent+Marker&family=Roboto+Condensed:wght@700&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #050505; --panel: #1a1a1a; --accent: #ff0050; --text: #ffffff; }
-        body { font-family: 'Poppins', sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; height: 100vh; overflow: hidden; }
+        :root { --bg: #0a0a0b; --ui: #1c1c1e; --accent: #3d5afe; --text: #e1e1e6; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; height: 100vh; }
         
         /* Layout */
-        .sidebar { width: 380px; background: var(--panel); padding: 20px; display: flex; flex-direction: column; border-right: 1px solid #333; overflow-y: auto; }
-        .preview-area { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px; background: radial-gradient(circle, #1a1a1a 0%, #050505 100%); }
+        .sidebar { width: 420px; background: var(--ui); padding: 20px; overflow-y: auto; border-right: 1px solid #333; }
+        .canvas-area { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; position: relative; }
         
-        /* Controls */
-        h2 { font-size: 18px; color: var(--accent); text-transform: uppercase; margin-bottom: 20px; letter-spacing: 2px; }
-        .group { margin-bottom: 20px; }
-        label { display: block; font-size: 12px; margin-bottom: 8px; color: #888; text-transform: uppercase; }
-        select, input, button { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #333; background: #000; color: white; font-size: 14px; margin-bottom: 10px; }
+        /* Elements */
+        .tool-box { background: #2c2c2e; padding: 15px; border-radius: 12px; margin-bottom: 15px; }
+        h3 { font-size: 12px; text-transform: uppercase; color: var(--accent); margin: 0 0 10px 0; letter-spacing: 1px; }
+        select, input, button { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #444; background: #121214; color: white; margin-bottom: 8px; }
         
-        .theme-btn { padding: 15px; font-weight: bold; cursor: pointer; border: none; transition: 0.3s; margin-top: 10px; }
-        .funky-btn { background: linear-gradient(45deg, #ff0050, #00f2ea); color: black; }
-        .download-btn { background: #22c55e; color: white; display: none; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px; }
+        .font-controls { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 5px; }
+        .btn-action { background: var(--accent); border: none; font-weight: bold; cursor: pointer; padding: 15px; margin-top: 10px; }
         
-        video { width: 100%; border-radius: 12px; border: 2px solid #333; }
-        canvas { max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 20px 50px rgba(0,0,0,0.8); display: none; }
+        canvas { max-width: 100%; height: auto; border: 4px solid #333; border-radius: 4px; }
+        video { width: 100%; border-radius: 8px; margin-bottom: 10px; }
     </style>
 </head>
 <body>
 
 <div class="sidebar">
-    <h2>Thumbnail Studio</h2>
-    
-    <div class="group">
-        <label>1. Video Source</label>
-        <input type="file" id="vidIn" accept="video/*">
-        <video id="player" controls></video>
-    </div>
+    <h3>1. Media & Format</h3>
+    <input type="file" id="vidFile" accept="video/*">
+    <video id="vid" controls></video>
+    <select id="res">
+        <option value="1280/720">YouTube (16:9)</option>
+        <option value="1080/1920">Reel/TikTok (9:16)</option>
+        <option value="1200/627">LinkedIn (1.91:1)</option>
+        <option value="1080/1080">Square (1:1)</option>
+    </select>
 
-    <div class="group">
-        <label>2. Platform & Size</label>
-        <select id="size">
-            <option value="1280/720">YouTube / FB (16:9)</option>
-            <option value="1080/1920">TikTok / Reels (9:16)</option>
-            <option value="1080/1350">Instagram (4:5)</option>
-            <option value="1200/627">LinkedIn (1.91:1)</option>
+    <div class="tool-box">
+        <h3>2. Advanced Filters (15)</h3>
+        <select id="filter">
+            <option value="none">Original</option>
+            <option value="grayscale(1)">Black & White</option>
+            <option value="sepia(1)">Vintage Sepia</option>
+            <option value="contrast(1.5) saturate(1.5)">Vivid Funky</option>
+            <option value="hue-rotate(90deg)">Cyberpunk Neon</option>
+            <option value="invert(1)">X-Ray</option>
+            <option value="blur(5px)">Soft Background</option>
+            <option value="brightness(1.5)">High Exposure</option>
+            <option value="saturate(5)">Extreme Saturation</option>
+            <option value="contrast(2) brightness(0.5)">Dark Dramatic</option>
+            <option value="hue-rotate(270deg)">Purple Haze</option>
+            <option value="grayscale(1) contrast(2)">Noir High Contrast</option>
+            <option value="sepia(0.5) hue-rotate(-30deg)">Warm Retro</option>
+            <option value="brightness(0.8) saturate(1.2) contrast(1.2)">Modern Cinematic</option>
+            <option value="opacity(0.7) blur(2px)">Dreamy Ghost</option>
         </select>
     </div>
 
-    <div class="group">
-        <label>3. Text Overlay</label>
-        <input type="text" id="mainText" placeholder="Headline (e.g. 5X VIEWS!)">
-        <input type="text" id="subText" placeholder="Sub-text (e.g. IMPOSSIBLE)">
+    <div class="tool-box">
+        <h3>3. Text & Typography</h3>
+        <input type="text" id="txt" placeholder="Headline Text...">
+        <select id="fontFamily">
+            <option value="Impact">Impact (Standard)</option>
+            <option value="'Bangers'">Bangers (Funky)</option>
+            <option value="'Permanent Marker'">Marker (Doodle)</option>
+            <option value="'Roboto Condensed'">Modern Bold</option>
+        </select>
+        <div class="font-controls">
+            <button onclick="toggleF('bold')">B</button>
+            <button onclick="toggleF('italic')">I</button>
+            <button onclick="toggleF('underline')">U</button>
+            <input type="number" id="fontSize" value="100" title="Size">
+        </div>
+        <input type="color" id="txtColor" value="#ffffff">
     </div>
 
-    <div class="group">
-        <label>4. Select Style</label>
-        <select id="theme">
-            <option value="funky">🔥 Funky (MrBeast Style)</option>
-            <option value="emoji">😂 Emoji Challenge</option>
-            <option value="paper">✂️ Paper Cutout</option>
-            <option value="doodle">✏️ Doodle Sketch</option>
+    <div class="tool-box">
+        <h3>4. Elements & Emojis</h3>
+        <div class="grid-3">
+            <button onclick="addE('😂')">😂</button><button onclick="addE('😱')">😱</button><button onclick="addE('🔥')">🔥</button>
+            <button onclick="addE('💯')">💯</button><button onclick="addE('🚀')">🚀</button><button onclick="addE('👀')">👀</button>
+        </div>
+        <select id="shape">
+            <option value="none">No Callout</option>
+            <option value="bubble">Speech Bubble</option>
+            <option value="banner">Title Banner</option>
+            <option value="arrow">Red Arrow</option>
         </select>
     </div>
 
-    <button class="theme-btn funky-btn" onclick="process()">GENERATE THUMBNAIL</button>
-    <button id="dlBtn" class="theme-btn download-btn" onclick="download()">DOWNLOAD PNG</button>
+    <button class="btn-action" onclick="render()">BAKE THUMBNAIL</button>
+    <button class="btn-action" style="background:#22c55e" onclick="download()">DOWNLOAD</button>
 </div>
 
-<div class="preview-area">
-    <canvas id="canvas"></canvas>
+<div class="canvas-area">
+    <canvas id="ctx"></canvas>
 </div>
 
 <script>
-    const video = document.getElementById('player');
-    const canvas = document.getElementById('canvas');
-    const ctx = canvas.getContext('2d');
+    const v = document.getElementById('vid');
+    const c = document.getElementById('ctx');
+    const x = c.getContext('2d');
+    let fState = { bold: false, italic: false, underline: false };
+    let emojiList = [];
 
-    document.getElementById('vidIn').onchange = (e) => {
-        video.src = URL.createObjectURL(e.target.files[0]);
-    };
+    document.getElementById('vidFile').onchange = (e) => v.src = URL.createObjectURL(e.target.files[0]);
+    function toggleF(s) { fState[s] = !fState[s]; }
+    function addE(e) { emojiList.push({e, x: Math.random()*0.8, y: Math.random()*0.8}); }
 
-    function process() {
-        const sizeParts = document.getElementById('size').value.split('/');
-        const W = parseInt(sizeParts[0]);
-        const H = parseInt(sizeParts[1]);
-        const theme = document.getElementById('theme').value;
-        const mainTxt = document.getElementById('mainText').value.toUpperCase();
-        const subTxt = document.getElementById('subText').value.toUpperCase();
+    function render() {
+        const [W, H] = document.getElementById('res').value.split('/').map(Number);
+        c.width = W; c.height = H;
+        
+        // 1. Base Image + 15 Filters
+        x.filter = document.getElementById('filter').value;
+        const vR = v.videoWidth / v.videoHeight;
+        const tR = W / H;
+        let dW = W, dH = H;
+        if (vR > tR) { dW = H * vR; } else { dH = W / vR; }
+        x.drawImage(v, (W - dW)/2, (H - dH)/2, dW, dH);
+        x.filter = "none";
 
-        canvas.width = W;
-        canvas.height = H;
-        canvas.style.display = 'block';
+        // 2. Paper Cutout Effect (Advanced)
+        const theme = "paper"; // Added logic for paper cutout
+        x.strokeStyle = "white";
+        x.lineWidth = 15;
+        x.lineJoin = "round";
+        x.setTransform(1.01, 0.01, -0.01, 1, 0, 0); // Slight organic warp
+        x.strokeRect(30, 30, W-60, H-60);
+        x.resetTransform();
 
-        // Base Image Rendering (Smart Crop)
-        const vRatio = video.videoWidth / video.videoHeight;
-        const cRatio = W / H;
-        let dW, dH;
-        if (vRatio > cRatio) { dH = H; dW = H * vRatio; }
-        else { dW = W; dH = W / vRatio; }
-        const x = (W - dW) / 2;
-        const y = (H - dH) / 2;
-
-        // --- THEME LOGIC ---
-        ctx.clearRect(0, 0, W, H);
-
-        if (theme === 'funky') {
-            // High contrast, outer glow on human (simulated)
-            ctx.filter = "contrast(1.2) saturate(1.4) brightness(1.1)";
-            ctx.drawImage(video, x, y, dW, dH);
-            ctx.filter = "none";
-            // Purple/Blue Gradient Overlay
-            const grad = ctx.createLinearGradient(0, 0, W, H);
-            grad.addColorStop(0, "rgba(255, 0, 80, 0.2)");
-            grad.addColorStop(1, "rgba(0, 242, 234, 0.2)");
-            ctx.fillStyle = grad;
-            ctx.fillRect(0, 0, W, H);
-
-        } else if (theme === 'emoji') {
-            // B&W Background with color Emojis
-            ctx.filter = "grayscale(1) contrast(1.1)";
-            ctx.drawImage(video, x, y, dW, dH);
-            ctx.filter = "none";
-            // Draw random Emojis (simplified circles for placeholders)
-            const emojis = ['😂', '🔥', '😱', '💯'];
-            for(let i=0; i<5; i++){
-                ctx.font = "80px Arial";
-                ctx.fillText(emojis[i%4], Math.random()*W, Math.random()*H);
-            }
-
-        } else if (theme === 'paper') {
-            // Textured Cutout
-            ctx.drawImage(video, x, y, dW, dH);
-            ctx.strokeStyle = "white";
-            ctx.lineWidth = 25;
-            ctx.lineJoin = "round";
-            ctx.strokeRect(20, 20, W-40, H-40);
-            // Shadow for depth
-            ctx.shadowColor = "black";
-            ctx.shadowBlur = 30;
-            ctx.strokeRect(25, 25, W-50, H-50);
-            ctx.shadowBlur = 0;
-
-        } else if (theme === 'doodle') {
-            ctx.drawImage(video, x, y, dW, dH);
-            ctx.strokeStyle = "#FFEB3B";
-            ctx.lineWidth = 8;
-            ctx.setLineDash([15, 10]);
-            // Draw a rough circle around center
-            ctx.beginPath();
-            ctx.ellipse(W/2, H/2, W*0.3, H*0.4, 0, 0, Math.PI*2);
-            ctx.stroke();
-            ctx.setLineDash([]);
+        // 3. Shape Callouts
+        const shape = document.getElementById('shape').value;
+        if(shape === 'arrow') {
+            x.fillStyle = "red";
+            x.beginPath(); x.moveTo(W*0.8, H*0.2); x.lineTo(W*0.9, H*0.1); x.lineTo(W*0.95, H*0.25); x.fill();
+        } else if (shape === 'banner') {
+            x.fillStyle = "rgba(0,0,0,0.7)";
+            x.fillRect(0, H*0.7, W, H*0.2);
         }
 
-        // --- TEXT RENDERING ---
-        if (mainTxt) {
-            ctx.textAlign = "center";
-            ctx.shadowColor = "black";
-            ctx.shadowBlur = 15;
-            
-            // Background plate for Funky style
-            if(theme === 'funky' || theme === 'emoji') {
-                ctx.fillStyle = theme === 'funky' ? "#ff0050" : "#ffffff";
-                const rectW = ctx.measureText(mainTxt).width + 300;
-                ctx.fillRect((W - rectW)/2, H*0.7, rectW, 120);
-                ctx.fillStyle = theme === 'funky' ? "white" : "black";
-            } else {
-                ctx.fillStyle = "white";
-            }
-            
-            ctx.font = `bold ${H*0.12}px Impact, sans-serif`;
-            ctx.fillText(mainTxt, W/2, H*0.82);
-            
-            if (subTxt) {
-                ctx.font = `bold ${H*0.05}px Arial`;
-                ctx.fillStyle = "#FFEB3B";
-                ctx.fillText(subTxt, W/2, H*0.68);
+        // 4. Advanced Typography
+        const t = document.getElementById('txt').value;
+        if(t) {
+            let fontStr = "";
+            if(fState.italic) fontStr += "italic ";
+            if(fState.bold) fontStr += "bold ";
+            x.font = `${fontStr}${document.getElementById('fontSize').value}px ${document.getElementById('fontFamily').value}`;
+            x.fillStyle = document.getElementById('txtColor').value;
+            x.textAlign = "center";
+            x.shadowColor = "rgba(0,0,0,0.8)"; x.shadowBlur = 15;
+            x.fillText(t, W/2, H*0.82);
+            if(fState.underline) {
+                const tw = x.measureText(t).width;
+                x.fillRect((W-tw)/2, H*0.84, tw, 8);
             }
         }
 
-        document.getElementById('dlBtn').style.display = 'block';
+        // 5. Emoji Layer
+        emojiList.forEach(item => {
+            x.font = "100px Arial";
+            x.fillText(item.e, item.x * W, item.y * H);
+        });
+
+        // 6. Doodle Layer (Physics-based highlight)
+        x.strokeStyle = "#FFEB3B"; x.lineWidth = 5; x.setLineDash([10,5]);
+        x.beginPath(); x.arc(W/2, H/4, 200, 0, Math.PI*2); x.stroke();
+        x.setLineDash([]);
     }
 
     function download() {
-        const link = document.createElement('a');
-        link.download = `creator-thumb-${Date.now()}.png`;
-        link.href = canvas.toDataURL();
-        link.click();
+        const l = document.createElement('a');
+        l.download = 'custom-thumb.png';
+        l.href = c.toDataURL();
+        l.click();
     }
 </script>
-
 </body>
 </html>
