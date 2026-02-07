@@ -3,180 +3,148 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Creator Core v2.0</title>
-    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Permanent+Marker&family=Roboto+Condensed:wght@700&display=swap" rel="stylesheet">
+    <title>Creator Core v4.0</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Permanent+Marker&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #0a0a0b; --ui: #1c1c1e; --accent: #3d5afe; --text: #e1e1e6; }
+        :root { --bg: #0c0c0e; --ui: #1a1a1c; --accent: #6366f1; --text: #f4f4f5; }
         body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; height: 100vh; }
-        
-        /* Layout */
-        .sidebar { width: 420px; background: var(--ui); padding: 20px; overflow-y: auto; border-right: 1px solid #333; }
-        .canvas-area { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; position: relative; }
-        
-        /* Elements */
-        .tool-box { background: #2c2c2e; padding: 15px; border-radius: 12px; margin-bottom: 15px; }
-        h3 { font-size: 12px; text-transform: uppercase; color: var(--accent); margin: 0 0 10px 0; letter-spacing: 1px; }
-        select, input, button { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #444; background: #121214; color: white; margin-bottom: 8px; }
-        
-        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px; }
-        .font-controls { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 5px; }
-        .btn-action { background: var(--accent); border: none; font-weight: bold; cursor: pointer; padding: 15px; margin-top: 10px; }
-        
-        canvas { max-width: 100%; height: auto; border: 4px solid #333; border-radius: 4px; }
-        video { width: 100%; border-radius: 8px; margin-bottom: 10px; }
+        .sidebar { width: 420px; background: var(--ui); padding: 20px; overflow-y: auto; border-right: 1px solid #2d2d30; }
+        .canvas-area { flex: 1; display: flex; align-items: center; justify-content: center; padding: 20px; position: relative; }
+        .tool-box { background: #27272a; padding: 15px; border-radius: 12px; margin-bottom: 15px; }
+        h3 { font-size: 11px; text-transform: uppercase; color: var(--accent); margin: 0 0 10px 0; letter-spacing: 1px; }
+        select, input, button { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #3f3f46; background: #0c0c0e; color: white; margin-bottom: 8px; }
+        .emoji-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
+        .btn-bake { background: var(--accent); border: none; font-weight: bold; cursor: pointer; padding: 16px; margin-top: 10px; font-size: 15px; }
+        video { width: 100%; border-radius: 10px; margin-bottom: 10px; }
+        canvas { max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
     </style>
 </head>
 <body>
 
 <div class="sidebar">
-    <h3>1. Media & Format</h3>
-    <input type="file" id="vidFile" accept="video/*">
-    <video id="vid" controls></video>
-    <select id="res">
-        <option value="1280/720">YouTube (16:9)</option>
-        <option value="1080/1920">Reel/TikTok (9:16)</option>
-        <option value="1200/627">LinkedIn (1.91:1)</option>
-        <option value="1080/1080">Square (1:1)</option>
+    <h3>1. Video & Templates</h3>
+    <input type="file" id="vidIn" accept="video/*">
+    <video id="v" controls></video>
+    
+    <select id="template" onchange="applyTemplate()">
+        <option value="none">Choose a Style...</option>
+        <option value="funky">🔥 Template: Funky (MrBeast Style)</option>
+        <option value="paper">✂️ Template: Paper Cutout</option>
+        <option value="doodle">✏️ Template: Doodle Highlight</option>
+        <option value="emoji">😂 Template: Emoji Challenge</option>
     </select>
 
     <div class="tool-box">
-        <h3>2. Advanced Filters (15)</h3>
-        <select id="filter">
-            <option value="none">Original</option>
-            <option value="grayscale(1)">Black & White</option>
-            <option value="sepia(1)">Vintage Sepia</option>
-            <option value="contrast(1.5) saturate(1.5)">Vivid Funky</option>
-            <option value="hue-rotate(90deg)">Cyberpunk Neon</option>
-            <option value="invert(1)">X-Ray</option>
-            <option value="blur(5px)">Soft Background</option>
-            <option value="brightness(1.5)">High Exposure</option>
-            <option value="saturate(5)">Extreme Saturation</option>
-            <option value="contrast(2) brightness(0.5)">Dark Dramatic</option>
-            <option value="hue-rotate(270deg)">Purple Haze</option>
-            <option value="grayscale(1) contrast(2)">Noir High Contrast</option>
-            <option value="sepia(0.5) hue-rotate(-30deg)">Warm Retro</option>
-            <option value="brightness(0.8) saturate(1.2) contrast(1.2)">Modern Cinematic</option>
-            <option value="opacity(0.7) blur(2px)">Dreamy Ghost</option>
+        <h3>2. Text & Font</h3>
+        <input type="text" id="tMain" placeholder="MAIN TEXT">
+        <select id="fFam">
+            <option value="Impact">Impact</option>
+            <option value="'Bangers'">Bangers</option>
+            <option value="'Permanent Marker'">Doodle Marker</option>
         </select>
+        <input type="color" id="tCol" value="#ffffff">
     </div>
 
     <div class="tool-box">
-        <h3>3. Text & Typography</h3>
-        <input type="text" id="txt" placeholder="Headline Text...">
-        <select id="fontFamily">
-            <option value="Impact">Impact (Standard)</option>
-            <option value="'Bangers'">Bangers (Funky)</option>
-            <option value="'Permanent Marker'">Marker (Doodle)</option>
-            <option value="'Roboto Condensed'">Modern Bold</option>
-        </select>
-        <div class="font-controls">
-            <button onclick="toggleF('bold')">B</button>
-            <button onclick="toggleF('italic')">I</button>
-            <button onclick="toggleF('underline')">U</button>
-            <input type="number" id="fontSize" value="100" title="Size">
+        <h3>3. Emojis (Click to Add)</h3>
+        <div class="emoji-grid">
+            <button onclick="addEmoji('😂')">😂</button>
+            <button onclick="addEmoji('🔥')">🔥</button>
+            <button onclick="addEmoji('😱')">😱</button>
+            <button onclick="addEmoji('💯')">💯</button>
         </div>
-        <input type="color" id="txtColor" value="#ffffff">
+        <button onclick="clearEmojis()" style="font-size:10px; background:#444;">Clear Emojis</button>
     </div>
 
-    <div class="tool-box">
-        <h3>4. Elements & Emojis</h3>
-        <div class="grid-3">
-            <button onclick="addE('😂')">😂</button><button onclick="addE('😱')">😱</button><button onclick="addE('🔥')">🔥</button>
-            <button onclick="addE('💯')">💯</button><button onclick="addE('🚀')">🚀</button><button onclick="addE('👀')">👀</button>
-        </div>
-        <select id="shape">
-            <option value="none">No Callout</option>
-            <option value="bubble">Speech Bubble</option>
-            <option value="banner">Title Banner</option>
-            <option value="arrow">Red Arrow</option>
-        </select>
-    </div>
-
-    <button class="btn-action" onclick="render()">BAKE THUMBNAIL</button>
-    <button class="btn-action" style="background:#22c55e" onclick="download()">DOWNLOAD</button>
+    <button class="btn-bake" onclick="bake()">BAKE & PREVIEW</button>
+    <button class="btn-bake" style="background:#10b981" onclick="dl()">DOWNLOAD THUMBNAIL</button>
 </div>
 
 <div class="canvas-area">
-    <canvas id="ctx"></canvas>
+    <canvas id="c"></canvas>
 </div>
 
 <script>
-    const v = document.getElementById('vid');
-    const c = document.getElementById('ctx');
-    const x = c.getContext('2d');
-    let fState = { bold: false, italic: false, underline: false };
-    let emojiList = [];
+    const vid = document.getElementById('v'), can = document.getElementById('c'), ctx = can.getContext('2d');
+    let emojisOnCanvas = [];
 
-    document.getElementById('vidFile').onchange = (e) => v.src = URL.createObjectURL(e.target.files[0]);
-    function toggleF(s) { fState[s] = !fState[s]; }
-    function addE(e) { emojiList.push({e, x: Math.random()*0.8, y: Math.random()*0.8}); }
+    document.getElementById('vidIn').onchange = (e) => vid.src = URL.createObjectURL(e.target.files[0]);
 
-    function render() {
-        const [W, H] = document.getElementById('res').value.split('/').map(Number);
-        c.width = W; c.height = H;
-        
-        // 1. Base Image + 15 Filters
-        x.filter = document.getElementById('filter').value;
-        const vR = v.videoWidth / v.videoHeight;
-        const tR = W / H;
-        let dW = W, dH = H;
-        if (vR > tR) { dW = H * vR; } else { dH = W / vR; }
-        x.drawImage(v, (W - dW)/2, (H - dH)/2, dW, dH);
-        x.filter = "none";
-
-        // 2. Paper Cutout Effect (Advanced)
-        const theme = "paper"; // Added logic for paper cutout
-        x.strokeStyle = "white";
-        x.lineWidth = 15;
-        x.lineJoin = "round";
-        x.setTransform(1.01, 0.01, -0.01, 1, 0, 0); // Slight organic warp
-        x.strokeRect(30, 30, W-60, H-60);
-        x.resetTransform();
-
-        // 3. Shape Callouts
-        const shape = document.getElementById('shape').value;
-        if(shape === 'arrow') {
-            x.fillStyle = "red";
-            x.beginPath(); x.moveTo(W*0.8, H*0.2); x.lineTo(W*0.9, H*0.1); x.lineTo(W*0.95, H*0.25); x.fill();
-        } else if (shape === 'banner') {
-            x.fillStyle = "rgba(0,0,0,0.7)";
-            x.fillRect(0, H*0.7, W, H*0.2);
-        }
-
-        // 4. Advanced Typography
-        const t = document.getElementById('txt').value;
-        if(t) {
-            let fontStr = "";
-            if(fState.italic) fontStr += "italic ";
-            if(fState.bold) fontStr += "bold ";
-            x.font = `${fontStr}${document.getElementById('fontSize').value}px ${document.getElementById('fontFamily').value}`;
-            x.fillStyle = document.getElementById('txtColor').value;
-            x.textAlign = "center";
-            x.shadowColor = "rgba(0,0,0,0.8)"; x.shadowBlur = 15;
-            x.fillText(t, W/2, H*0.82);
-            if(fState.underline) {
-                const tw = x.measureText(t).width;
-                x.fillRect((W-tw)/2, H*0.84, tw, 8);
-            }
-        }
-
-        // 5. Emoji Layer
-        emojiList.forEach(item => {
-            x.font = "100px Arial";
-            x.fillText(item.e, item.x * W, item.y * H);
-        });
-
-        // 6. Doodle Layer (Physics-based highlight)
-        x.strokeStyle = "#FFEB3B"; x.lineWidth = 5; x.setLineDash([10,5]);
-        x.beginPath(); x.arc(W/2, H/4, 200, 0, Math.PI*2); x.stroke();
-        x.setLineDash([]);
+    function addEmoji(e) {
+        emojisOnCanvas.push({ char: e, x: Math.random() * 0.8, y: Math.random() * 0.8 });
+        bake(); // Live update
     }
 
-    function download() {
-        const l = document.createElement('a');
-        l.download = 'custom-thumb.png';
-        l.href = c.toDataURL();
-        l.click();
+    function clearEmojis() { emojisOnCanvas = []; bake(); }
+
+    function applyTemplate() {
+        const t = document.getElementById('template').value;
+        if(t === 'funky') {
+            document.getElementById('fFam').value = "'Bangers'";
+            document.getElementById('tCol').value = "#ffff00";
+        } else if (t === 'paper') {
+            document.getElementById('fFam').value = "Impact";
+        } else if (t === 'doodle') {
+            document.getElementById('fFam').value = "'Permanent Marker'";
+        }
+        bake();
+    }
+
+    function bake() {
+        const W = 1280, H = 720;
+        can.width = W; can.height = H;
+        const template = document.getElementById('template').value;
+
+        // 1. Base Image Logic
+        const vR = vid.videoWidth / vid.videoHeight, tR = W / H;
+        let dW = W, dH = H;
+        if (vR > tR) { dW = H * vR; } else { dH = W / vR; }
+        const oX = (W - dW)/2, oY = (H - dH)/2;
+
+        ctx.clearRect(0, 0, W, H);
+        
+        // Filter Logic
+        if(template === 'emoji') ctx.filter = "grayscale(1) contrast(1.2)";
+        else if(template === 'funky') ctx.filter = "contrast(1.3) saturate(1.5)";
+        else ctx.filter = "none";
+
+        ctx.drawImage(vid, oX, oY, dW, dH);
+        ctx.filter = "none";
+
+        // 2. Specialized Effects
+        if(template === 'paper') {
+            ctx.strokeStyle = "white"; ctx.lineWidth = 20;
+            ctx.shadowColor = "black"; ctx.shadowBlur = 15;
+            ctx.strokeRect(30, 30, W-60, H-60); //
+        } else if(template === 'funky') {
+            const g = ctx.createLinearGradient(0,0,W,H);
+            g.addColorStop(0, "rgba(255,0,80,0.2)"); g.addColorStop(1, "rgba(0,242,234,0.2)");
+            ctx.fillStyle = g; ctx.fillRect(0,0,W,H); //
+        } else if(template === 'doodle') {
+            ctx.strokeStyle = "#FFEB3B"; ctx.lineWidth = 10; ctx.setLineDash([15, 10]);
+            ctx.strokeRect(50, 50, W-100, H-100); //
+            ctx.setLineDash([]);
+        }
+
+        // 3. Emoji Layers
+        emojisOnCanvas.forEach(item => {
+            ctx.font = "120px Arial";
+            ctx.fillText(item.char, item.x * W, item.y * H); //
+        });
+
+        // 4. Text Rendering
+        const txt = document.getElementById('tMain').value;
+        if(txt) {
+            ctx.font = `bold 120px ${document.getElementById('fFam').value}`;
+            ctx.fillStyle = document.getElementById('tCol').value;
+            ctx.textAlign = "center";
+            ctx.shadowColor = "black"; ctx.shadowBlur = 20;
+            ctx.fillText(txt.toUpperCase(), W/2, H*0.85);
+        }
+    }
+
+    function dl() {
+        const l = document.createElement('a'); l.download = 'thumbnail.png'; l.href = can.toDataURL(); l.click();
     }
 </script>
 </body>
